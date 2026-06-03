@@ -1,14 +1,17 @@
-```html
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="apple-touch-icon" href="icone.png">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>CasaFlow V2</title>
+<title>CasaFlow Pro</title>
 
 <style>
-
 body{
     margin:0;
     background:#0f1117;
@@ -16,380 +19,401 @@ body{
     font-family:Arial,sans-serif;
 }
 
-.login{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+.header{
+    background:linear-gradient(135deg,#7b2ff7,#5f00ff);
+    padding:30px;
+    border-bottom-left-radius:25px;
+    border-bottom-right-radius:25px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
 }
 
 .card{
     background:#1c1f2b;
-    padding:30px;
+    padding:20px;
     border-radius:20px;
-    width:320px;
+    margin-bottom:20px;
 }
 
-input{
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+input,select,button{
     width:100%;
     padding:12px;
-    border:none;
     border-radius:12px;
-    margin-top:10px;
+    border:none;
+    margin-top:5px;
     box-sizing:border-box;
 }
 
+input,select{
+    background:#2b2e3d;
+    color:white;
+}
+
 button{
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    border:none;
-    border-radius:12px;
     background:#7b2ff7;
     color:white;
     font-weight:bold;
+    cursor:pointer;
 }
 
-.erro{
-    color:#ff6b6b;
-    margin-top:10px;
+table{
+    width:100%;
+    border-collapse:collapse;
 }
 
-#app{
-    display:none;
+th,td{
+    padding:12px;
+    border-bottom:1px solid #333;
+    text-align:left;
 }
 
-.header{
-    background:#7b2ff7;
-    padding:20px;
+.badge{
+    display:inline-block;
+    background:#2b2e3d;
+    padding:5px 10px;
+    border-radius:20px;
+    margin:2px;
+    font-size:12px;
 }
 
-.container{
-    padding:20px;
+.summary{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
 }
 
+.summary-card{
+    background:#262a38;
+    border-radius:18px;
+    padding:18px;
+}
+
+.small{
+    opacity:0.7;
+    font-size:13px;
+}
+
+@media(max-width:700px){
+    .grid{
+        grid-template-columns:1fr;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<div id="loginTela" class="login">
-
-    <div class="card">
-
-        <h2>🔒 CasaFlow</h2>
-
-        <p>Digite a senha da família</p>
-
-        <input
-            type="password"
-            id="senha"
-            placeholder="Senha">
-
-        <button onclick="entrar()">
-            Entrar
-        </button>
-
-        <div id="erro" class="erro"></div>
-
-    </div>
-
+<div class="header">
+<h1>💳 RochaQueiroz</h1>
+<p>Controle inteligente da casa</p>
 </div>
 
-<div id="app">
+<div class="container">
 
-    <div class="header">
-        <h1>💳 RochaQueiroz</h1>
-    </div>
-
-    <div class="container">
-
-        <h2>Nova Compra</h2>
-
+<div class="card">
 <h2>Nova Compra</h2>
 
-<input type="text"
-       id="descricao"
-       placeholder="Descrição">
+<div class="grid">
 
-<input type="number"
-       id="valor"
-       placeholder="Valor">
+<div>
+<label>Nome da Compra</label>
+<input type="text" id="descricao" placeholder="Ex: Mercado Assaí">
+</div>
 
+<div>
+<label>Valor Total</label>
+<input type="number" id="valor" step="0.01">
+</div>
+
+<div>
+<label>Quem Pagou?</label>
 <select id="pagou">
-
 <option>Ricardo</option>
 <option>Priscila</option>
 <option>Rejane</option>
 <option>Vanilto</option>
 <option>Vanessa</option>
-
 </select>
+</div>
 
+<div>
+<label>Cartão de Crédito</label>
 <select id="cartao">
-
 <option>Nubank Ricardo</option>
 <option>Nubank Priscila</option>
-<option>Cartão Vanilto</option>
-<option>Cartão Rejane</option>
-<option>PIX</option>
-
+<option>Cartao Vanilto</option>
+<option>Cartao Rejane</option>
+<option>Pix</option>
+<option>itau Ricardo</option>
+<option>bradesco Pri</option>
+<option>Satander Pri</option>
 </select>
+</div>
 
-<h3>Participantes</h3>
+<div>
+<label>Parcelas</label>
+<input type="number" id="parcelas" min="1" value="1">
+</div>
 
-<label>
-<input type="checkbox"
-       class="participante"
-       value="Ricardo"
-       checked>
-Ricardo
-</label>
-
-<label>
-<input type="checkbox"
-       class="participante"
-       value="Priscila"
-       checked>
-Priscila
-</label>
-
-<label>
-<input type="checkbox"
-       class="participante"
-       value="Rejane"
-       checked>
-Rejane
-</label>
-
-<label>
-<input type="checkbox"
-       class="participante"
-       value="Vanilto"
-       checked>
-Vanilto
-</label>
-
-<label>
-<input type="checkbox"
-       class="participante"
-       value="Vanessa"
-       checked>
-Vanessa
-</label>
-
-<br><br>
-
-<button onclick="adicionarCompra()">
-Salvar Compra
-</button>
-
-<button onclick="adicionarCompra()">
-Salvar Compra
-</button>
-
-<hr>
-
-<h2>Compras</h2>
-
-<div id="lista"></div>
-
-<br>
-
-<button onclick="sair()">
-Sair
-</button>
-        <button onclick="sair()">
-            Sair
-        </button>
-
-    </div>
+<div>
+<label>Mês</label>
+<input type="month" id="mes">
+</div>
 
 </div>
 
-<script>
+<h3>Participantes</h3>
 
-const SENHA = "Naosei00";
+<div class="grid">
+<label><input type="checkbox" class="participante" value="Ricardo" checked> Ricardo</label>
+<label><input type="checkbox" class="participante" value="Priscila" checked> Priscila</label>
+<label><input type="checkbox" class="participante" value="Rejane" checked> Rejane</label>
+<label><input type="checkbox" class="participante" value="Vanilto" checked> Vanilto</label>
+<label><input type="checkbox" class="participante" value="Vanessa" checked> Vanessa</label>
+</div>
 
-function entrar(){
+<br>
+<button onclick="adicionarCompra()">Adicionar Compra</button>
 
-    const senha =
-        document.getElementById("senha").value;
+</div>
 
-    if(senha === SENHA){
+<div class="card">
+<h2>📅 Histórico por Mês</h2>
 
-        localStorage.setItem(
-            "casaflow_logado",
-            "sim"
-        );
+<select id="filtroMes" onchange="render()"></select>
 
-        mostrarSistema();
+<table>
+<thead>
+<tr>
+<th>Compra</th>
+<th>Cartão</th>
+<th>Parcelas</th>
+<th>Pagou</th>
+<th>Participantes</th>
+<th>Ação</th>
+</tr>
+</thead>
 
-    }else{
+<tbody id="lista"></tbody>
 
-        document.getElementById("erro")
-            .innerHTML = "Senha incorreta";
+</table>
 
-    }
-}
+</div>
 
-function sair(){
+<div class="card">
+<h2>📊 Resumo</h2>
+<div class="summary" id="resumo"></div>
+</div>
 
-    localStorage.removeItem(
-        "casaflow_logado"
-    );
-
-    location.reload();
-}
-
-function mostrarSistema(){
-
-    document.getElementById("loginTela")
-        .style.display = "none";
-
-    document.getElementById("app")
-        .style.display = "block";
-}
-
-if(
-    localStorage.getItem(
-        "casaflow_logado"
-    ) === "sim"
-){
-    mostrarSistema();
-}
-
-</script>
+</div>
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 
 import {
- getFirestore,
- collection,
- addDoc,
- getDocs
-}
-from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
-
- apiKey: "AIzaSyA5sp5jnMs4LkvWaPwH_bAZxLd0NGUShIw",
-
- authDomain:
- "rochaqueiroz-1748f.firebaseapp.com",
-
- projectId:
- "rochaqueiroz-1748f",
-
- storageBucket:
- "rochaqueiroz-1748f.firebasestorage.app",
-
- messagingSenderId:
- "961447711850",
-
- appId:
- "1:961447711850:web:c5b5e9e64cc83fc107e613"
-
+  apiKey: "AIzaSyA5sp5jnMs4LkvWaPwH_bAZxLd0NGUShIw",
+  authDomain: "rochaqueiroz-1748f.firebaseapp.com",
+  projectId: "rochaqueiroz-1748f",
+  storageBucket: "rochaqueiroz-1748f.firebasestorage.app",
+  messagingSenderId: "961447711850",
+  appId: "1:961447711850:web:c5b5e9e64cc83fc107e613"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.adicionarCompra = async function(){
-
-const descricao =
- document.getElementById("descricao").value;
-
-const valor =
- parseFloat(
-  document.getElementById("valor").value
- );
-
-const pagou =
- document.getElementById("pagou").value;
-
-const cartao =
- document.getElementById("cartao").value;
-
-const participantes =
- [...document.querySelectorAll(
-   ".participante:checked"
- )].map(p=>p.value);
-
-await addDoc(
- collection(db,"compras"),
- {
-  descricao,
-  valor,
-  pagou,
-  cartao,
-  participantes,
-  data:new Date().toISOString()
- }
-);
-
- carregarCompras();
-}
-
-async function carregarCompras(){
-
- const snapshot =
-  await getDocs(
-   collection(db,"compras")
-  );
-
- const lista =
-  document.getElementById("lista");
-
- lista.innerHTML = "";
-
- snapshot.forEach(doc=>{
-
-  const c = doc.data();
-
-  lista.innerHTML += `
-   <div>
-  <div style="
-background:#1c1f2b;
-padding:10px;
-margin-bottom:10px;
-border-radius:10px;
-">
-
-<strong>${c.descricao}</strong>
-
-<br>
-
-R$ ${c.valor}
-
-<br>
-
-Pagou:
-${c.pagou}
-
-<br>
-
-Cartão:
-${c.cartao}
-
-<br>
-
-Participantes:
-${c.participantes.join(", ")}
-
-</div>
-   </div>
-  `;
-
- });
-
-}
-
-window.onload = carregarCompras;
+window.db = db;
+window.collection = collection;
+window.addDoc = addDoc;
+window.getDocs = getDocs;
+window.deleteDoc = deleteDoc;
+window.doc = doc;
 
 </script>
+<script>
+
+let compras = [];
+
+document.getElementById("mes").value = new Date().toISOString().slice(0,7);
+
+
+
+function atualizarFiltroMes(){
+
+    const filtro = document.getElementById("filtroMes");
+
+    const meses = [...new Set(compras.map(c => c.mes))];
+
+    if(meses.length === 0){
+        meses.push(new Date().toISOString().slice(0,7));
+    }
+
+    filtro.innerHTML = "";
+
+    meses.sort().reverse().forEach(m=>{
+        filtro.innerHTML += `<option value="${m}">${m}</option>`;
+    });
+}
+
+async function adicionarCompra(){
+
+    const descricao = document.getElementById("descricao").value;
+    const valor = parseFloat(document.getElementById("valor").value);
+    const pagou = document.getElementById("pagou").value;
+    const cartao = document.getElementById("cartao").value;
+    const parcelas = parseInt(document.getElementById("parcelas").value);
+    const mes = document.getElementById("mes").value;
+
+    const participantes = [...document.querySelectorAll(".participante:checked")]
+        .map(p=>p.value);
+
+    if(!descricao || !valor){
+        alert("Preencha os campos.");
+        return;
+    }
+
+    await addDoc(
+        collection(db, "compras"),
+        {
+            descricao,
+            valor,
+            pagou,
+            cartao,
+            parcelas,
+            participantes,
+            mes
+        }
+    );
+
+    await carregarCompras();
+}
+
+
+function remover(index){
+    compras.splice(index,1);
+    salvar();
+    atualizarFiltroMes();
+    render();
+}
+async function carregarCompras(){
+
+    compras = [];
+
+    const snapshot = await getDocs(
+        collection(db, "compras")
+    );
+
+    snapshot.forEach(docSnap=>{
+
+        compras.push({
+            id: docSnap.id,
+            ...docSnap.data()
+        });
+
+    });
+
+    atualizarFiltroMes();
+    render();
+}
+function render(){
+
+    const filtro = document.getElementById("filtroMes").value;
+
+    const lista = document.getElementById("lista");
+    lista.innerHTML = "";
+
+    let saldo = {
+        "Ricardo":0,
+        "Priscila":0,
+        "Rejane":0,
+        "Vanilto":0,
+        "Vanessa":0
+    };
+
+    compras.forEach((c,index)=>{
+
+        if(c.mes !== filtro) return;
+
+        const valorParcela = c.valor / c.parcelas;
+        const dividido = valorParcela / c.participantes.length;
+
+        saldo[c.pagou] += valorParcela;
+
+        c.participantes.forEach(p=>{
+            saldo[p] -= dividido;
+        });
+
+        lista.innerHTML += `
+        <tr>
+            <td>
+                <strong>${c.descricao}</strong><br>
+                <span class="small">R$ ${c.valor.toFixed(2)}</span>
+            </td>
+
+            <td>${c.cartao}</td>
+
+            <td>
+                ${c.parcelas}x de R$ ${valorParcela.toFixed(2)}
+            </td>
+
+            <td>${c.pagou}</td>
+
+            <td>
+                ${c.participantes.map(p=>`<span class="badge">${p}</span>`).join("")}
+            </td>
+
+            <td>
+                <button onclick="remover(${index})">Excluir</button>
+            </td>
+        </tr>
+        `;
+    });
+
+    const resumo = document.getElementById("resumo");
+    resumo.innerHTML = "";
+
+    Object.keys(saldo).forEach(nome=>{
+
+        const valor = saldo[nome];
+
+        resumo.innerHTML += `
+        <div class="summary-card">
+            <h3>${nome}</h3>
+
+            ${
+                valor >= 0
+                ? `<p>Recebe</p><h2>R$ ${valor.toFixed(2)}</h2>`
+                : `<p>Deve</p><h2>R$ ${Math.abs(valor).toFixed(2)}</h2>`
+            }
+
+        </div>
+        `;
+    });
+
+}
+
+carregarCompras();
+
+</script>
+
 </body>
 </html>
-```
