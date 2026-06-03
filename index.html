@@ -292,7 +292,7 @@ async function adicionarCompra(){
     }
 
     await addDoc(
-        collection(db, "compras"),
+        collection(window.db, "compras"),
         {
             descricao,
             valor,
@@ -310,7 +310,6 @@ async function adicionarCompra(){
 
 function remover(index){
     compras.splice(index,1);
-    salvar();
     atualizarFiltroMes();
     render();
 }
@@ -319,7 +318,7 @@ async function carregarCompras(){
     compras = [];
 
     const snapshot = await getDocs(
-        collection(db, "compras")
+        collection(window.db, "compras")
     );
 
     snapshot.forEach(docSnap=>{
