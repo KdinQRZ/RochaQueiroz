@@ -106,6 +106,8 @@ button{
 
         <h2>Nova Compra</h2>
 
+<h2>Nova Compra</h2>
+
 <input type="text"
        id="descricao"
        placeholder="Descrição">
@@ -113,6 +115,74 @@ button{
 <input type="number"
        id="valor"
        placeholder="Valor">
+
+<select id="pagou">
+
+<option>Ricardo</option>
+<option>Priscila</option>
+<option>Rejane</option>
+<option>Vanilto</option>
+<option>Vanessa</option>
+
+</select>
+
+<select id="cartao">
+
+<option>Nubank Ricardo</option>
+<option>Nubank Priscila</option>
+<option>Cartão Vanilto</option>
+<option>Cartão Rejane</option>
+<option>PIX</option>
+
+</select>
+
+<h3>Participantes</h3>
+
+<label>
+<input type="checkbox"
+       class="participante"
+       value="Ricardo"
+       checked>
+Ricardo
+</label>
+
+<label>
+<input type="checkbox"
+       class="participante"
+       value="Priscila"
+       checked>
+Priscila
+</label>
+
+<label>
+<input type="checkbox"
+       class="participante"
+       value="Rejane"
+       checked>
+Rejane
+</label>
+
+<label>
+<input type="checkbox"
+       class="participante"
+       value="Vanilto"
+       checked>
+Vanilto
+</label>
+
+<label>
+<input type="checkbox"
+       class="participante"
+       value="Vanessa"
+       checked>
+Vanessa
+</label>
+
+<br><br>
+
+<button onclick="adicionarCompra()">
+Salvar Compra
+</button>
 
 <button onclick="adicionarCompra()">
 Salvar Compra
@@ -229,21 +299,36 @@ const db = getFirestore(app);
 
 window.adicionarCompra = async function(){
 
- const descricao =
-  document.getElementById("descricao").value;
+const descricao =
+ document.getElementById("descricao").value;
 
- const valor =
-  parseFloat(
-   document.getElementById("valor").value
-  );
-
- await addDoc(
-  collection(db,"compras"),
-  {
-   descricao,
-   valor
-  }
+const valor =
+ parseFloat(
+  document.getElementById("valor").value
  );
+
+const pagou =
+ document.getElementById("pagou").value;
+
+const cartao =
+ document.getElementById("cartao").value;
+
+const participantes =
+ [...document.querySelectorAll(
+   ".participante:checked"
+ )].map(p=>p.value);
+
+await addDoc(
+ collection(db,"compras"),
+ {
+  descricao,
+  valor,
+  pagou,
+  cartao,
+  participantes,
+  data:new Date().toISOString()
+ }
+);
 
  carregarCompras();
 }
@@ -266,8 +351,35 @@ async function carregarCompras(){
 
   lista.innerHTML += `
    <div>
-    ${c.descricao}
-    - R$ ${c.valor}
+  <div style="
+background:#1c1f2b;
+padding:10px;
+margin-bottom:10px;
+border-radius:10px;
+">
+
+<strong>${c.descricao}</strong>
+
+<br>
+
+R$ ${c.valor}
+
+<br>
+
+Pagou:
+${c.pagou}
+
+<br>
+
+Cartão:
+${c.cartao}
+
+<br>
+
+Participantes:
+${c.participantes.join(", ")}
+
+</div>
    </div>
   `;
 
