@@ -216,17 +216,49 @@ th,td{
 </div>
 
 </div>
+<script type="module">
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA5sp5jnMs4LkvWaPwH_bAZxLd0NGUShIw",
+  authDomain: "rochaqueiroz-1748f.firebaseapp.com",
+  projectId: "rochaqueiroz-1748f",
+  storageBucket: "rochaqueiroz-1748f.firebasestorage.app",
+  messagingSenderId: "961447711850",
+  appId: "1:961447711850:web:c5b5e9e64cc83fc107e613"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.db = db;
+window.collection = collection;
+window.addDoc = addDoc;
+window.getDocs = getDocs;
+
+</script>
 <script>
 
 let compras = JSON.parse(localStorage.getItem("casaflowpro")) || [];
 
 document.getElementById("mes").value = new Date().toISOString().slice(0,7);
 
-function salvar(){
-    localStorage.setItem("casaflowpro", JSON.stringify(compras));
-}
+async function salvarCompraFirebase(compra){
 
+    await addDoc(
+        collection(db, "compras"),
+        compra
+    );
+
+}
 function atualizarFiltroMes(){
 
     const filtro = document.getElementById("filtroMes");
@@ -261,17 +293,19 @@ function adicionarCompra(){
         return;
     }
 
-    compras.push({
-        descricao,
-        valor,
-        pagou,
-        cartao,
-        parcelas,
-        participantes,
-        mes
-    });
+    const compra = {
+    descricao,
+    valor,
+    pagou,
+    cartao,
+    parcelas,
+    participantes,
+    mes
+};
 
-    salvar();
+await salvarCompraFirebase(compra);
+
+compras.push(compra);
     atualizarFiltroMes();
     render();
 }
