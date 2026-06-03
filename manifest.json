@@ -1,0 +1,9 @@
+{
+  "name": "CasaFlow Ultimate",
+  "short_name": "CasaFlow",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#7b2ff7",
+  "icons": []
+}

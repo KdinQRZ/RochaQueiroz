@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="apple-touch-icon" href="icone.png">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CasaFlow Pro</title>
+
+<style>
+body{
+    margin:0;
+    background:#0f1117;
+    color:white;
+    font-family:Arial,sans-serif;
+}
+
+.header{
+    background:linear-gradient(135deg,#7b2ff7,#5f00ff);
+    padding:30px;
+    border-bottom-left-radius:25px;
+    border-bottom-right-radius:25px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:#1c1f2b;
+    padding:20px;
+    border-radius:20px;
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+input,select,button{
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:none;
+    margin-top:5px;
+    box-sizing:border-box;
+}
+
+input,select{
+    background:#2b2e3d;
+    color:white;
+}
+
+button{
+    background:#7b2ff7;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #333;
+    text-align:left;
+}
+
+.badge{
+    display:inline-block;
+    background:#2b2e3d;
+    padding:5px 10px;
+    border-radius:20px;
+    margin:2px;
+    font-size:12px;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+.summary-card{
+    background:#262a38;
+    border-radius:18px;
+    padding:18px;
+}
+
+.small{
+    opacity:0.7;
+    font-size:13px;
+}
+
+@media(max-width:700px){
+    .grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1>💳 RochaQueiroz</h1>
+<p>Controle inteligente da casa</p>
+</div>
+
+<div class="container">
+
+<div class="card">
+<h2>Nova Compra</h2>
+
+<div class="grid">
+
+<div>
+<label>Nome da Compra</label>
+<input type="text" id="descricao" placeholder="Ex: Mercado Assaí">
+</div>
+
+<div>
+<label>Valor Total</label>
+<input type="number" id="valor" step="0.01">
+</div>
+
+<div>
+<label>Quem Pagou?</label>
+<select id="pagou">
+<option>Ricardo</option>
+<option>Priscila</option>
+<option>Rejane</option>
+<option>Vanilto</option>
+<option>Vanessa</option>
+</select>
+</div>
+
+<div>
+<label>Cartão de Crédito</label>
+<select id="cartao">
+<option>Nubank Ricardo</option>
+<option>Nubank Priscila</option>
+<option>Cartao Vanilto</option>
+<option>Cartao Rejane</option>
+<option>Pix</option>
+<option>itau Ricardo</option>
+<option>bradesco Pri</option>
+<option>Satander Pri</option>
+</select>
+</div>
+
+<div>
+<label>Parcelas</label>
+<input type="number" id="parcelas" min="1" value="1">
+</div>
+
+<div>
+<label>Mês</label>
+<input type="month" id="mes">
+</div>
+
+</div>
+
+<h3>Participantes</h3>
+
+<div class="grid">
+<label><input type="checkbox" class="participante" value="Ricardo" checked> Ricardo</label>
+<label><input type="checkbox" class="participante" value="Priscila" checked> Priscila</label>
+<label><input type="checkbox" class="participante" value="Rejane" checked> Rejane</label>
+<label><input type="checkbox" class="participante" value="Vanilto" checked> Vanilto</label>
+<label><input type="checkbox" class="participante" value="Vanessa" checked> Vanessa</label>
+</div>
+
+<br>
+<button onclick="adicionarCompra()">Adicionar Compra</button>
+
+</div>
+
+<div class="card">
+<h2>📅 Histórico por Mês</h2>
+
+<select id="filtroMes" onchange="render()"></select>
+
+<table>
+<thead>
+<tr>
+<th>Compra</th>
+<th>Cartão</th>
+<th>Parcelas</th>
+<th>Pagou</th>
+<th>Participantes</th>
+<th>Ação</th>
+</tr>
+</thead>
+
+<tbody id="lista"></tbody>
+
+</table>
+
+</div>
+
+<div class="card">
+<h2>📊 Resumo</h2>
+<div class="summary" id="resumo"></div>
+</div>
+
+</div>
+
+<script>
+
+let compras = JSON.parse(localStorage.getItem("casaflowpro")) || [];
+
+document.getElementById("mes").value = new Date().toISOString().slice(0,7);
+
+function salvar(){
+    localStorage.setItem("casaflowpro", JSON.stringify(compras));
+}
+
+function atualizarFiltroMes(){
+
+    const filtro = document.getElementById("filtroMes");
+
+    const meses = [...new Set(compras.map(c => c.mes))];
+
+    if(meses.length === 0){
+        meses.push(new Date().toISOString().slice(0,7));
+    }
+
+    filtro.innerHTML = "";
+
+    meses.sort().reverse().forEach(m=>{
+        filtro.innerHTML += `<option value="${m}">${m}</option>`;
+    });
+}
+
+function adicionarCompra(){
+
+    const descricao = document.getElementById("descricao").value;
+    const valor = parseFloat(document.getElementById("valor").value);
+    const pagou = document.getElementById("pagou").value;
+    const cartao = document.getElementById("cartao").value;
+    const parcelas = parseInt(document.getElementById("parcelas").value);
+    const mes = document.getElementById("mes").value;
+
+    const participantes = [...document.querySelectorAll(".participante:checked")]
+        .map(p=>p.value);
+
+    if(!descricao || !valor){
+        alert("Preencha os campos.");
+        return;
+    }
+
+    compras.push({
+        descricao,
+        valor,
+        pagou,
+        cartao,
+        parcelas,
+        participantes,
+        mes
+    });
+
+    salvar();
+    atualizarFiltroMes();
+    render();
+}
+
+function remover(index){
+    compras.splice(index,1);
+    salvar();
+    atualizarFiltroMes();
+    render();
+}
+
+function render(){
+
+    const filtro = document.getElementById("filtroMes").value;
+
+    const lista = document.getElementById("lista");
+    lista.innerHTML = "";
+
+    let saldo = {
+        "Ricardo":0,
+        "Priscila":0,
+        "Rejane":0,
+        "Vanilto":0,
+        "Vanessa":0
+    };
+
+    compras.forEach((c,index)=>{
+
+        if(c.mes !== filtro) return;
+
+        const valorParcela = c.valor / c.parcelas;
+        const dividido = valorParcela / c.participantes.length;
+
+        saldo[c.pagou] += valorParcela;
+
+        c.participantes.forEach(p=>{
+            saldo[p] -= dividido;
+        });
+
+        lista.innerHTML += `
+        <tr>
+            <td>
+                <strong>${c.descricao}</strong><br>
+                <span class="small">R$ ${c.valor.toFixed(2)}</span>
+            </td>
+
+            <td>${c.cartao}</td>
+
+            <td>
+                ${c.parcelas}x de R$ ${valorParcela.toFixed(2)}
+            </td>
+
+            <td>${c.pagou}</td>
+
+            <td>
+                ${c.participantes.map(p=>`<span class="badge">${p}</span>`).join("")}
+            </td>
+
+            <td>
+                <button onclick="remover(${index})">Excluir</button>
+            </td>
+        </tr>
+        `;
+    });
+
+    const resumo = document.getElementById("resumo");
+    resumo.innerHTML = "";
+
+    Object.keys(saldo).forEach(nome=>{
+
+        const valor = saldo[nome];
+
+        resumo.innerHTML += `
+        <div class="summary-card">
+            <h3>${nome}</h3>
+
+            ${
+                valor >= 0
+                ? `<p>Recebe</p><h2>R$ ${valor.toFixed(2)}</h2>`
+                : `<p>Deve</p><h2>R$ ${Math.abs(valor).toFixed(2)}</h2>`
+            }
+
+        </div>
+        `;
+    });
+
+}
+
+atualizarFiltroMes();
+render();
+
+</script>
+
+</body>
+</html>
